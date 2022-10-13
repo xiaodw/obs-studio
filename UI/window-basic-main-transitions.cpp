@@ -1584,7 +1584,7 @@ void OBSBasic::SetPreviewProgramMode(bool enabled)
 	if (IsPreviewProgramMode() == enabled)
 		return;
 
-	ui->modeSwitch->setChecked(enabled);
+	//ui->modeSwitch->setChecked(enabled);
 	os_atomic_set_bool(&previewProgramMode, enabled);
 
 	if (IsPreviewProgramMode()) {
