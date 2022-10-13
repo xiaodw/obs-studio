@@ -1970,6 +1970,21 @@ void OBSBasic::OBSInit()
 	const char *dockStateStr = config_get_string(
 		App()->GlobalConfig(), "BasicWindow", "DockState");
 
+	if (!dockStateStr || 0 == strcmp(dockStateStr,
+		"AAAA/wAAAAD9AAAAAQAAAAMAAAXGAAAAw/wBAAAABvsAAAAUAHMAYwBlAG4AZQBzAEQAbwBjAGsBAAAAAAAAAToAAACgAP"
+		"////sAAAAWAHMAbwB1AHIAYwBlAHMARABvAGMAawEAAAE+AAABOwAAAKAA"
+		"////+wAAABIAbQBpAHgAZQByAEQAbwBjAGsBAAACfQAAAZgAAADeAP"
+		"////sAAAAeAHQAcgBhAG4AcwBpAHQAaQBvAG4AcwBEAG8AYwBrAQAABBkAAACEAAAAhAD"
+		"////7AAAAGABjAG8AbgB0AHIAbwBsAHMARABvAGMAawEAAAShAAABJQAAAJ4A"
+		"////+wAAABIAcwB0AGEAdABzAEQAbwBjAGsCAAACYgAAAhIAAAK8AAAAyAAABcYAAAJtAAAABAAAAAQAAAAIAAAACPwAAAAA")) {
+		dockStateStr = "AAAA/wAAAAD9AAAAAwAAAAAAAADeAAADNPwCAAAAAvsAAAASAG0AaQB4AGUAcgBEAG8AYwBrAQAAABgAAAK3AAAAigD"
+			"////7AAAAGABjAG8AbgB0AHIAbwBsAHMARABvAGMAawEAAALTAAAAeQAAAHkA"
+			"////AAAAAQAAAQcAAAM0/AIAAAAC+wAAABQAcwBjAGUAbgBlAHMARABvAGMAawEAAAAYAAABkgAAAI4A"
+			"////+wAAABYAcwBvAHUAcgBjAGUAcwBEAG8AYwBrAQAAAa4AAAGeAAAAjgD"
+			"///8AAAADAAAENwAAAN/8AQAAAAL7AAAAHgB0AHIAYQBuAHMAaQB0AGkAbwBuAHMARABvAGMAawAAAAAAAAAENwAAAIIA"
+			"////+wAAABIAcwB0AGEAdABzAEQAbwBjAGsCAAACYgAAAhIAAAK8AAAAyAAAA9kAAAM0AAAABAAAAAQAAAAIAAAACPwAAAAA";
+	}
+
 	if (!dockStateStr) {
 		on_resetDocks_triggered(true);
 	} else {
@@ -8913,65 +8928,76 @@ int OBSBasic::GetProfilePath(char *path, size_t size, const char *file) const
 
 void OBSBasic::on_resetDocks_triggered(bool force)
 {
-	/* prune deleted extra docks */
-	for (int i = extraDocks.size() - 1; i >= 0; i--) {
-		if (!extraDocks[i]) {
-			extraDocks.removeAt(i);
-		}
-	}
+	const char *dockStateStr =
+		"AAAA/wAAAAD9AAAAAwAAAAAAAADeAAADNPwCAAAAAvsAAAASAG0AaQB4AGUAcgBEAG8AYwBrAQAAABgAAAK3AAAAigD"
+		"////7AAAAGABjAG8AbgB0AHIAbwBsAHMARABvAGMAawEAAALTAAAAeQAAAHkA"
+		"////AAAAAQAAAQcAAAM0/AIAAAAC+wAAABQAcwBjAGUAbgBlAHMARABvAGMAawEAAAAYAAABkgAAAI4A"
+		"////+wAAABYAcwBvAHUAcgBjAGUAcwBEAG8AYwBrAQAAAa4AAAGeAAAAjgD"
+		"///8AAAADAAAENwAAAN/8AQAAAAL7AAAAHgB0AHIAYQBuAHMAaQB0AGkAbwBuAHMARABvAGMAawAAAAAAAAAENwAAAIIA"
+		"////+wAAABIAcwB0AGEAdABzAEQAbwBjAGsCAAACYgAAAhIAAAK8AAAAyAAAA9kAAAM0AAAABAAAAAQAAAAIAAAACPwAAAAA";
+	
+	QByteArray dockState = QByteArray::fromBase64(QByteArray(dockStateStr));
+	restoreState(dockState);
 
-	if (extraDocks.size() && !force) {
-		QMessageBox::StandardButton button = QMessageBox::question(
-			this, QTStr("ResetUIWarning.Title"),
-			QTStr("ResetUIWarning.Text"));
+	///* prune deleted extra docks */
+	//for (int i = extraDocks.size() - 1; i >= 0; i--) {
+	//	if (!extraDocks[i]) {
+	//		extraDocks.removeAt(i);
+	//	}
+	//}
 
-		if (button == QMessageBox::No)
-			return;
-	}
+	//if (extraDocks.size() && !force) {
+	//	QMessageBox::StandardButton button = QMessageBox::question(
+	//		this, QTStr("ResetUIWarning.Title"),
+	//		QTStr("ResetUIWarning.Text"));
 
-	/* undock/hide/center extra docks */
-	for (int i = extraDocks.size() - 1; i >= 0; i--) {
-		if (extraDocks[i]) {
-			extraDocks[i]->setVisible(true);
-			extraDocks[i]->setFloating(true);
-			extraDocks[i]->move(frameGeometry().topLeft() +
-					    rect().center() -
-					    extraDocks[i]->rect().center());
-			extraDocks[i]->setVisible(false);
-		}
-	}
+	//	if (button == QMessageBox::No)
+	//		return;
+	//}
 
-	restoreState(startingDockLayout);
+	///* undock/hide/center extra docks */
+	//for (int i = extraDocks.size() - 1; i >= 0; i--) {
+	//	if (extraDocks[i]) {
+	//		extraDocks[i]->setVisible(true);
+	//		extraDocks[i]->setFloating(true);
+	//		extraDocks[i]->move(frameGeometry().topLeft() +
+	//				    rect().center() -
+	//				    extraDocks[i]->rect().center());
+	//		extraDocks[i]->setVisible(false);
+	//	}
+	//}
 
-	int cx = width();
-	int cy = height();
+	//restoreState(startingDockLayout);
 
-	int cx22_5 = cx * 225 / 1000;
-	int cx5 = cx * 5 / 100;
-	int cx21 = cx * 21 / 100;
+	//int cx = width();
+	//int cy = height();
 
-	cy = cy * 225 / 1000;
+	//int cx22_5 = cx * 225 / 1000;
+	//int cx5 = cx * 5 / 100;
+	//int cx21 = cx * 21 / 100;
 
-	int mixerSize = cx - (cx22_5 * 2 + cx5 + cx21);
+	//cy = cy * 225 / 1000;
 
-	QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock,
-				   ui->mixerDock, ui->transitionsDock,
-				   ui->controlsDock};
+	//int mixerSize = cx - (cx22_5 * 2 + cx5 + cx21);
 
-	QList<int> sizes{cx22_5, cx22_5, mixerSize, cx5, cx21};
+	//QList<QDockWidget *> docks{ui->scenesDock, ui->sourcesDock,
+	//			   ui->mixerDock, ui->transitionsDock,
+	//			   ui->controlsDock};
 
-	ui->scenesDock->setVisible(true);
-	ui->sourcesDock->setVisible(true);
-	ui->mixerDock->setVisible(true);
-	ui->transitionsDock->setVisible(true);
-	ui->controlsDock->setVisible(true);
-	statsDock->setVisible(false);
-	statsDock->setFloating(true);
+	//QList<int> sizes{cx22_5, cx22_5, mixerSize, cx5, cx21};
 
-	resizeDocks(docks, {cy, cy, cy, cy, cy}, Qt::Vertical);
-	resizeDocks(docks, sizes, Qt::Horizontal);
+	//ui->scenesDock->setVisible(true);
+	//ui->sourcesDock->setVisible(true);
+	//ui->mixerDock->setVisible(true);
+	//ui->transitionsDock->setVisible(true);
+	//ui->controlsDock->setVisible(true);
+	//statsDock->setVisible(false);
+	//statsDock->setFloating(true);
 
-	activateWindow();
+	//resizeDocks(docks, {cy, cy, cy, cy, cy}, Qt::Vertical);
+	//resizeDocks(docks, sizes, Qt::Horizontal);
+
+	//activateWindow();
 }
 
 void OBSBasic::on_lockDocks_toggled(bool lock)
