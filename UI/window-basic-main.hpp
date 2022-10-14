@@ -305,6 +305,7 @@ private:
 
 	QPointer<ControlsSplitButton> vcamButton;
 	bool vcamEnabled = false;
+	bool trtcStream = true;
 
 	QScopedPointer<QSystemTrayIcon> trayIcon;
 	QPointer<QAction> sysTrayStream;
@@ -870,6 +871,7 @@ public:
 	}
 
 	inline bool VCamEnabled() const { return vcamEnabled; }
+	inline bool TrtcStream() const { return trtcStream; }
 
 	bool Active() const;
 
